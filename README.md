@@ -1,6 +1,15 @@
 # Global Energy Capacity Dashboard
 
-A data-driven, interactive dashboard for monitoring global energy capacity with focus on renewable energy trends.
+A data-driven, interactive dashboard for monitoring global energy capacity with focus on renewable energy trends. Deployed as a Cloudflare Worker for optimal performance and global edge distribution.
+
+## 🚀 Live Dashboard
+
+**Production URL**: https://energy.gsaboia.workers.dev
+
+**API Endpoints**:
+
+- Health Check: https://energy.gsaboia.workers.dev/health
+- Dashboard Info: https://energy.gsaboia.workers.dev/api/info
 
 ## Overview
 
@@ -14,6 +23,7 @@ This dashboard visualizes global electricity generation capacity by energy sourc
 - **Real-time Data** - Based on IRENA, IEA, and Energy Institute statistics
 - **Responsive Design** - Clean, modern interface that works across devices
 - **Color-coded Sources** - Each energy source has distinct visual representation
+- **Edge Performance** - Deployed on Cloudflare Workers for global speed
 
 ## Energy Sources Tracked
 
@@ -26,7 +36,7 @@ This dashboard visualizes global electricity generation capacity by energy sourc
 
 ## Current Implementation
 
-- **Status**: Working MVP deployed
+- **Status**: ✅ Production deployed on Cloudflare Workers
 - **Data Period**: 2020-2024 (5 years of historical data)
 - **Chart Type**: Interactive bar chart with year selection
 - **Interactivity**:
@@ -37,31 +47,91 @@ This dashboard visualizes global electricity generation capacity by energy sourc
 
 ## Technology Stack
 
+- **Runtime**: Cloudflare Workers (Edge computing)
 - **Frontend**: Vanilla HTML/CSS/JavaScript
 - **Charts**: D3.js v7 (CDN)
 - **Data**: Embedded JSON data (avoids CORS issues)
 - **Styling**: Custom CSS with modern design
-- **Deployment**: Ready for Cloudflare Pages
+- **Static Assets**: Served via Workers Static Assets
 
-## Getting Started
+## Development
 
-1. Open `index.html` in a web browser
-2. Use the year selector or navigation buttons to explore different years
-3. Hover over bars to see:
-   - Exact capacity values
-   - Year-over-year changes (percentage)
-   - Growth/decline indicators
+### Prerequisites
+
+- Node.js 18+
+- npm
+- Wrangler CLI (Cloudflare Workers CLI)
+
+### Local Development
+
+1. **Clone the repository**:
+
+   ```bash
+   git clone https://github.com/ghsaboias/energy.git
+   cd energy
+   ```
+
+2. **Install dependencies**:
+
+   ```bash
+   npm install
+   ```
+
+3. **Start development server**:
+
+   ```bash
+   npm run dev
+   ```
+
+4. **Open in browser**:
+   ```
+   http://localhost:8787
+   ```
+
+### Deployment
+
+Deploy to Cloudflare Workers:
+
+```bash
+npm run deploy
+```
 
 ## File Structure
 
 ```
 energy/
-├── index.html          # Main dashboard page
-├── script.js           # D3.js chart implementation
-├── style.css          # Dashboard styling
-├── README.md          # This file
-└── docs/              # Technical documentation
+├── src/
+│   └── index.ts           # Worker entry point
+├── public/                # Static assets
+│   ├── index.html         # Main dashboard page
+│   ├── script.js          # D3.js chart implementation
+│   ├── style.css          # Dashboard styling
+│   ├── README.md          # Documentation
+│   └── ENERGY_DASHBOARD_DECISIONS.md
+├── wrangler.jsonc         # Worker configuration
+├── package.json           # Dependencies
+├── tsconfig.json          # TypeScript config
+└── test/                  # Test files
 ```
+
+## API Endpoints
+
+The Worker provides several endpoints:
+
+- `GET /` - Main dashboard
+- `GET /health` - Health check
+- `GET /api/info` - Dashboard metadata
+- `GET /style.css` - Stylesheet
+- `GET /script.js` - JavaScript functionality
+
+## Usage
+
+1. Visit the live dashboard at https://energy.gsaboia.workers.dev
+2. Use the year selector or navigation buttons to explore different years
+3. Hover over bars to see:
+   - Exact capacity values
+   - Year-over-year changes (percentage)
+   - Growth/decline indicators
 
 ## Future Enhancements
 
