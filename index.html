@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Global Energy Capacity Dashboard</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="container">
+      <header>
+        <h1>Global Energy Capacity Dashboard</h1>
+        <p>Global installed capacity by energy source</p>
+      </header>
+
+      <main>
+        <div class="chart-container">
+          <div class="chart-controls">
+            <button id="prevYear" class="year-nav-btn">← Previous Year</button>
+            <select id="yearSelector" class="year-selector">
+              <option value="2020">2020</option>
+              <option value="2021">2021</option>
+              <option value="2022">2022</option>
+              <option value="2023">2023</option>
+              <option value="2024" selected>2024</option>
+            </select>
+            <button id="nextYear" class="year-nav-btn">Next Year →</button>
+          </div>
+          <div id="energy-chart"></div>
+        </div>
+
+        <div class="data-info">
+          <p>Data sources: IRENA, IEA, Energy Institute</p>
+          <p>Last updated: 2024</p>
+        </div>
+      </main>
+    </div>
+
+    <!-- D3.js CDN -->
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <script src="script.js"></script>
+  </body>
+</html>
