@@ -1,5 +1,5 @@
 ---
-description: 'Energy dashboard project context and architecture'
+alwaysApply: true
 ---
 
 # Energy Dashboard Project Context
@@ -29,12 +29,57 @@ Interactive energy capacity dashboard deployed on Cloudflare Workers at https://
 - Monthly time series data (2023-2025)
 - Country-specific data (Global, US, China)
 - 5 chart types: bar, percentage, time series, delta analysis
-- Interactive period/country selection
+- Interactive period/country selection with optimized performance
 - Source attribution system
+- GPU-accelerated animations and transitions
 
 ## Development Preferences
 
 - Spartan tone in responses
 - Git integration with 'master' branch (not 'main')
+- Concise documentation in docs/ directory
+- Cloudflare Pages deployment preference
+
+- Concise documentation in docs/ directory
+- Cloudflare Pages deployment preference
+
+# Energy Dashboard Project Context
+
+## Project Overview
+
+Interactive energy capacity dashboard deployed on Cloudflare Workers at https://energy.gsaboia.workers.dev
+
+## Current Architecture
+
+- **Runtime**: Cloudflare Workers
+- **Frontend**: Vanilla HTML/CSS/JavaScript
+- **Charts**: Chart.js library
+- **Data**: Embedded JSON with country-specific data
+- **Deployment**: Cloudflare Pages with Git integration
+
+## Key Files
+
+- [src/index.ts](mdc:src/index.ts) - Worker entry point
+- [public/index.html](mdc:public/index.html) - Dashboard UI
+- [public/script.js](mdc:public/script.js) - Chart functionality
+- [public/style.css](mdc:public/style.css) - Styling
+- [README.md](mdc:README.md) - Project documentation
+
+## Current Features
+
+- Monthly time series data (2023-2025)
+- Country-specific data (Global, US, China)
+- 5 chart types: bar, percentage, time series, delta analysis
+- Interactive period/country selection with optimized performance
+- Source attribution system
+- GPU-accelerated animations and transitions
+
+## Development Preferences
+
+- Spartan tone in responses
+- Git integration with 'master' branch (not 'main')
+- Concise documentation in docs/ directory
+- Cloudflare Pages deployment preference
+
 - Concise documentation in docs/ directory
 - Cloudflare Pages deployment preference
