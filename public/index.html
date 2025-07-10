@@ -1,43 +1,116 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Global Energy Capacity Dashboard</title>
-    <link rel="stylesheet" href="style.css" />
-  </head>
-  <body>
-    <div class="container">
-      <header>
-        <h1>Global Energy Capacity Dashboard</h1>
-        <p>Global installed capacity by energy source</p>
-      </header>
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Global Energy Intelligence Hub</title>
+		<link rel="stylesheet" href="style.css" />
+		<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+		<script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
+	</head>
+	<body>
+		<div class="container">
+			<header>
+				<h1>Global Energy Intelligence Hub</h1>
+				<p class="subtitle">Real-time monitoring of global and regional energy supply capacity</p>
+			</header>
 
-      <main>
-        <div class="chart-container">
-          <div class="chart-controls">
-            <button id="prevYear" class="year-nav-btn">← Previous Year</button>
-            <select id="yearSelector" class="year-selector">
-              <option value="2020">2020</option>
-              <option value="2021">2021</option>
-              <option value="2022">2022</option>
-              <option value="2023">2023</option>
-              <option value="2024" selected>2024</option>
-            </select>
-            <button id="nextYear" class="year-nav-btn">Next Year →</button>
-          </div>
-          <div id="energy-chart"></div>
-        </div>
+			<div class="controls">
+				<div class="period-selector">
+					<label for="yearSelector">Select Period:</label>
+					<select id="yearSelector">
+						<option value="2025-07">July 2025</option>
+						<option value="2025-06">June 2025</option>
+						<option value="2025-05">May 2025</option>
+						<option value="2025-04">April 2025</option>
+						<option value="2025-03">March 2025</option>
+						<option value="2025-02">February 2025</option>
+						<option value="2025-01">January 2025</option>
+						<option value="2024-12">December 2024</option>
+						<option value="2024-11">November 2024</option>
+						<option value="2024-10">October 2024</option>
+						<option value="2024-09">September 2024</option>
+						<option value="2024-08">August 2024</option>
+						<option value="2024-07">July 2024</option>
+						<option value="2024-06">June 2024</option>
+						<option value="2024-05">May 2024</option>
+						<option value="2024-04">April 2024</option>
+						<option value="2024-03">March 2024</option>
+						<option value="2024-02">February 2024</option>
+						<option value="2024-01">January 2024</option>
+						<option value="2023-12">December 2023</option>
+						<option value="2023-11">November 2023</option>
+						<option value="2023-10">October 2023</option>
+						<option value="2023-09">September 2023</option>
+						<option value="2023-08">August 2023</option>
+						<option value="2023-07">July 2023</option>
+						<option value="2023-06">June 2023</option>
+						<option value="2023-05">May 2023</option>
+						<option value="2023-04">April 2023</option>
+						<option value="2023-03">March 2023</option>
+						<option value="2023-02">February 2023</option>
+					</select>
+				</div>
+				<div class="country-selector">
+					<label for="countrySelector">Select Region:</label>
+					<select id="countrySelector">
+						<option value="Global">Global</option>
+						<option value="US">United States</option>
+						<option value="China">China</option>
+					</select>
+				</div>
+				<div class="navigation">
+					<button id="prevYear">← Previous</button>
+					<button id="nextYear">Next →</button>
+				</div>
+			</div>
 
-        <div class="data-info">
-          <p>Data sources: IRENA, IEA, Energy Institute</p>
-          <p>Last updated: 2024</p>
-        </div>
-      </main>
-    </div>
+			<div class="main-content">
+				<div class="chart-container">
+					<canvas id="energyChart"></canvas>
+				</div>
 
-    <!-- D3.js CDN -->
-    <script src="https://d3js.org/d3.v7.min.js"></script>
-    <script src="script.js"></script>
-  </body>
+				<div class="chart-container">
+					<canvas id="percentageChart"></canvas>
+				</div>
+
+				<div class="chart-container time-series-container">
+					<canvas id="timeSeriesChart"></canvas>
+				</div>
+
+				<div class="chart-container delta-container">
+					<canvas id="deltaChart"></canvas>
+				</div>
+
+				<div class="chart-container total-delta-container">
+					<canvas id="totalDeltaChart"></canvas>
+				</div>
+
+				<div class="source-attribution" id="source-attribution">
+					<h3>Data Sources</h3>
+					<p>Loading source attribution...</p>
+				</div>
+			</div>
+
+			<div class="data-sources">
+				<h3>Primary Data Sources</h3>
+				<div class="source-grid">
+					<div class="source-card">
+						<h4>International Energy Agency (IEA)</h4>
+						<p>World Energy Outlook, Energy Statistics, and sector-specific reports</p>
+					</div>
+					<div class="source-card">
+						<h4>International Renewable Energy Agency (IRENA)</h4>
+						<p>Global renewable energy capacity statistics and market analysis</p>
+					</div>
+					<div class="source-card">
+						<h4>Statista & Energy Institute</h4>
+						<p>Comprehensive energy market data and statistical analysis</p>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<script src="script.js"></script>
+	</body>
 </html>

@@ -1,7 +1,7 @@
 /**
- * Global Energy Capacity Dashboard Worker
+ * Global Energy Intelligence Hub Worker
  * 
- * This Worker serves the interactive energy dashboard with static assets.
+ * This Worker serves the interactive energy intelligence hub with static assets.
  * 
  * - Run `npm run dev` in your terminal to start a development server
  * - Open a browser tab at http://localhost:8787/ to see your worker in action
@@ -28,29 +28,30 @@ export default {
 		// Handle specific routes
 		switch (url.pathname) {
 			case '/':
-				// Serve the main dashboard
+				// Serve the main intelligence hub
 				try {
 					return await env.ASSETS.fetch(new Request(new URL('/index.html', request.url)));
 				} catch {
-					return new Response('Dashboard not found', { status: 404 });
+					return new Response('Intelligence Hub not found', { status: 404 });
 				}
 
 			case '/health':
-				return new Response('Energy Dashboard is running!', {
+				return new Response('Energy Intelligence Hub is running!', {
 					status: 200,
 					headers: { 'Content-Type': 'text/plain' }
 				});
 
 			case '/api/info':
 				return new Response(JSON.stringify({
-					name: 'Global Energy Capacity Dashboard',
-					version: '1.0.0',
-					description: 'Interactive dashboard showing global energy capacity trends 2020-2024',
+					name: 'Global Energy Intelligence Hub',
+					version: '2.0.0',
+					description: 'Interactive hub for monitoring global energy supply with source attribution',
 					features: [
-						'Time series visualization',
-						'Year-over-year comparisons',
-						'Interactive controls',
-						'Responsive design'
+						'Supply capacity monitoring',
+						'Monthly time series',
+						'Period-over-period comparisons',
+						'Source attribution',
+						'Global aggregates'
 					]
 				}), {
 					headers: { 'Content-Type': 'application/json' }
