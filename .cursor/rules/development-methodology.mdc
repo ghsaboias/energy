@@ -1,0 +1,29 @@
+---
+description: 'Development methodology and cycle management'
+---
+
+# 3-Tier Development Methodology
+
+Reference [docs/development-cycles.md](mdc:docs/development-cycles.md) for complete methodology.
+
+## Cycle Structure
+
+- **Hourly (Tactical)**: Specific task execution, immediate decisions
+- **4-Hour (Feature)**: Feature development and integration work
+- **Daily (Strategic)**: Daily planning and architectural decisions
+
+## Documentation Requirements
+
+- Update [docs/daily-planning.md](mdc:docs/daily-planning.md) for strategic planning
+- Maintain hourly logs in `docs/hourly-log-YYYY-MM-DD.md`
+- Follow templates in development-cycles documentation
+
+## Integration Rules
+
+- Every 4 hours: review hourly progress, consolidate decisions
+- End of day: summarize sprints, identify patterns, plan next day
+- Weekly: review all cycles, adjust development velocity
+
+## Current State Tracking
+
+Track active development phases and completion rates as defined in the methodology documentation.

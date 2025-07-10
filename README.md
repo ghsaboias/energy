@@ -49,10 +49,28 @@ This dashboard visualizes global electricity generation capacity by energy sourc
 
 - **Runtime**: Cloudflare Workers (Edge computing)
 - **Frontend**: Vanilla HTML/CSS/JavaScript
-- **Charts**: D3.js v7 (CDN)
+- **Charts**: Chart.js v7 (CDN)
 - **Data**: Embedded JSON data (avoids CORS issues)
 - **Styling**: Custom CSS with modern design
 - **Static Assets**: Served via Workers Static Assets
+- **Architecture**: Modular ES6 modules for maintainability
+
+## Modular Architecture
+
+The dashboard uses a clean modular architecture with ES6 modules:
+
+- **`script.js`** - Main application orchestration and initialization
+- **`data.js`** - Energy data storage and access functions
+- **`charts.js`** - Chart.js chart creation and update logic
+- **`controls.js`** - UI controls, event handlers, and state management
+- **`utils.js`** - Helper functions, calculations, and utilities
+
+This modular approach improves:
+
+- **Maintainability** - Each module has a single responsibility
+- **Reusability** - Functions can be easily shared between modules
+- **Testability** - Individual modules can be tested in isolation
+- **Collaboration** - Multiple developers can work on different modules
 
 ## Development
 
@@ -104,7 +122,11 @@ energy/
 │   └── index.ts           # Worker entry point
 ├── public/                # Static assets
 │   ├── index.html         # Main dashboard page
-│   ├── script.js          # D3.js chart implementation
+│   ├── script.js          # Application orchestration
+│   ├── data.js            # Energy data and access functions
+│   ├── charts.js          # Chart.js initialization and updates
+│   ├── controls.js        # UI controls and event handlers
+│   ├── utils.js           # Helper functions and calculations
 │   ├── style.css          # Dashboard styling
 │   ├── README.md          # Documentation
 │   └── ENERGY_DASHBOARD_DECISIONS.md
@@ -122,7 +144,11 @@ The Worker provides several endpoints:
 - `GET /health` - Health check
 - `GET /api/info` - Dashboard metadata
 - `GET /style.css` - Stylesheet
-- `GET /script.js` - JavaScript functionality
+- `GET /script.js` - Application orchestration
+- `GET /data.js` - Energy data module
+- `GET /charts.js` - Chart functionality module
+- `GET /controls.js` - UI controls module
+- `GET /utils.js` - Utility functions module
 
 ## Usage
 

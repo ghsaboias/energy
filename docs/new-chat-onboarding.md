@@ -59,7 +59,12 @@ Does this align with your expectations? Any corrections needed?
 2. **`docs/development-cycles.md`** - Development methodology
 3. **`docs/daily-planning.md`** - Current priorities and feature pipeline
 4. **`public/index.html`** - Dashboard structure (if discussing UI)
-5. **`public/script.js`** - Core functionality (if discussing features)
+5. **Modular JavaScript files** (if discussing functionality):
+   - **`public/script.js`** - Application orchestration
+   - **`public/data.js`** - Energy data and access functions
+   - **`public/charts.js`** - Chart.js functionality
+   - **`public/controls.js`** - UI controls and event handlers
+   - **`public/utils.js`** - Helper functions and calculations
 
 ### **Standard Context Prompt**
 
@@ -176,8 +181,9 @@ If alignment breaks:
 
 - **Runtime**: Cloudflare Workers
 - **Frontend**: Vanilla HTML/CSS/JavaScript
-- **Charts**: D3.js v7
-- **Data**: Embedded JSON (2020-2024)
+- **Charts**: Chart.js v7
+- **Data**: Embedded JSON in modular data.js (2023-2025)
+- **Architecture**: ES6 modules (5 focused files)
 - **Deployment**: Wrangler CLI
 
 ### **File Structure**
@@ -189,7 +195,11 @@ energy/
 ├── src/index.ts                 # Worker entry point
 ├── public/                      # Static assets
 │   ├── index.html              # Dashboard UI
-│   ├── script.js               # D3.js functionality
+│   ├── script.js               # Application orchestration
+│   ├── data.js                 # Energy data and access functions
+│   ├── charts.js               # Chart.js initialization and updates
+│   ├── controls.js             # UI controls and event handlers
+│   ├── utils.js                # Helper functions and calculations
 │   └── style.css               # Styling
 ├── wrangler.jsonc              # Worker config
 └── package.json                # Dependencies
@@ -251,7 +261,7 @@ I'm working on [SPECIFIC FEATURE] for my energy dashboard. Please add:
 
 CRITICAL: Start with alignment protocol before any changes.
 
-Then help me implement [SPECIFIC FEATURE] following the existing code patterns.
+Then help me implement [SPECIFIC FEATURE] following the existing modular code patterns.
 ```
 
 ---

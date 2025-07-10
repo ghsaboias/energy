@@ -68,7 +68,7 @@
 **Decision**: Client-side with embedded JSON and source attribution  
 **Implementation**:
 
-- Monthly data embedded in script.js
+- Monthly data embedded in modular data.js
 - Source attribution for every data point
 - Real-time calculations for percentages and changes
 - Efficient data structure for country/period lookup
@@ -79,10 +79,33 @@
 
 - **Frontend**: Vanilla HTML/CSS/JavaScript ✅
 - **Charts**: Chart.js (CDN) ✅
-- **Data**: Embedded JSON (30+ months, 3 regions) ✅
+- **Data**: Embedded JSON in modular data.js ✅
+- **Architecture**: ES6 modules (5 focused files) ✅
 - **Styling**: Custom CSS with modern design ✅
 - **Deployment**: Cloudflare Pages ready ✅
-- **Build**: None (direct files) ✅
+- **Build**: None (direct module files) ✅
+
+---
+
+## 📁 **Modular Architecture**
+
+### **Code Organization** ✅
+
+The dashboard is built with a clean modular architecture:
+
+1. **`script.js`** - Application orchestration and initialization
+2. **`data.js`** - Energy data storage and access functions
+3. **`charts.js`** - Chart.js chart creation and update logic
+4. **`controls.js`** - UI controls, event handlers, and state management
+5. **`utils.js`** - Helper functions, calculations, and utilities
+
+### **Benefits Achieved** ✅
+
+- **Maintainability**: Each module has single responsibility
+- **Reusability**: Functions easily shared between modules
+- **Testability**: Individual modules can be tested in isolation
+- **Collaboration**: Multiple developers can work on different modules
+- **Performance**: Only necessary code loads per functionality
 
 ---
 
@@ -122,11 +145,11 @@
 
 ## 📈 **Enhanced Data Implementation**
 
-**Current Data Structure**:
+**Current Data Structure** (in `data.js`):
 
 ```javascript
-// Global monthly data
-const energyData = {
+// Global monthly data (exported from data.js)
+export const energyData = {
 	'2025-07': {
 		coal: { value: 2092, sources: ['Energy Institute...', 'IEA...'] },
 		gas: { value: 1851, sources: ['IEA Gas Market...', 'Energy Institute...'] },
@@ -135,8 +158,8 @@ const energyData = {
 	// ... 30+ months of data
 };
 
-// Country-specific data
-const countryData = {
+// Country-specific data (exported from data.js)
+export const countryData = {
 	US: {
 		'2025-07': {
 			coal: { value: 200, sources: ['EIA Electric Power...'] },

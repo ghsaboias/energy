@@ -1,0 +1,60 @@
+---
+alwaysApply: true
+---
+
+# Development Time Tracking Integration
+
+## Phase Management Commands
+
+Before starting any development work, establish time tracking:
+
+```bash
+# Start daily session
+npm run time start daily "Brief description of today's goals"
+
+# Start hourly focused work
+npm run time start hourly "Specific task description"
+```
+
+After completing tasks:
+
+```bash
+# End current phase
+npm run time end
+
+# Check status and recommendations
+npm run time status
+```
+
+## Development Methodology Integration
+
+Follow the 3-tier development cycle from [docs/development-cycles.md](mdc:docs/development-cycles.md):
+
+1. **Hourly (Tactical)** - Specific task execution
+2. **4-Hour (Feature)** - Feature development sprints
+3. **Daily (Strategic)** - Architectural decisions
+
+## Auto-Documentation
+
+- Hourly logs auto-created in `docs/hourly-log-YYYY-MM-DD.md`
+- **IMPORTANT**: Hourly logs are automatically updated by `npm run time end`
+- **DO NOT manually edit** hourly log progress sections during development
+- The CLI automatically populates: objective, duration, and timestamps
+- Reference [docs/time-tracking-cli.md](mdc:docs/time-tracking-cli.md) for full CLI usage
+
+## Time Awareness
+
+- Check `npm run time status` periodically for phase duration warnings
+- Transition phases when recommended (50+ min for hourly, 220+ min for 4-hour)
+- Use timing data to inform development velocity decisions
+
+## CLI Integration Pattern
+
+```bash
+npm run time start hourly "Task name"
+# Perform development work
+npm run time end
+# Hourly log automatically updated with session details
+```
+
+**Key Point**: The `npm run time end` command automatically updates the hourly log with session metadata. Developers should focus on development work, not manual log updates.
