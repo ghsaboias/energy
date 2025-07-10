@@ -402,7 +402,9 @@ const countryData = {
 // Global state
 let currentPeriod = '2025-07';
 let currentCountry = 'Global';
-let energyChart, percentageChart, timeSeriesChart, deltaChart, totalDeltaChart;
+let comparisonCountry = 'US';
+let isComparisonMode = false;
+let energyChart, percentageChart, timeSeriesChart, deltaChart, totalDeltaChart, comparisonChart;
 
 // Get current data based on selected country and period
 function getCurrentData(period = currentPeriod, country = currentCountry) {
@@ -429,7 +431,9 @@ document.addEventListener('DOMContentLoaded', function () {
 	initializeTimeSeriesChart();
 	initializeDeltaChart();
 	initializeTotalDeltaChart();
+	initializeComparisonChart();
 	setupPeriodControls();
+	setupComparisonControls();
 	updatePeriodSelector(); // Initialize period selector for default country
 	updateAllCharts();
 });
@@ -544,6 +548,63 @@ function initializePercentageChart() {
 							return `${percentage.toFixed(1)}% (${actualValue} GW)`;
 						},
 					},
+				},
+			},
+		},
+	});
+}
+
+// Initialize Comparison Chart
+function initializeComparisonChart() {
+	const ctx = document.getElementById('comparisonChart').getContext('2d');
+
+	comparisonChart = new Chart(ctx, {
+		type: 'bar',
+		data: {
+			labels: ['Coal', 'Natural Gas', 'Nuclear', 'Hydroelectric', 'Wind', 'Solar'],
+			datasets: [
+				{
+					label: 'Country 1',
+					data: [0, 0, 0, 0, 0, 0],
+					backgroundColor: ['#2c3e50', '#3498db', '#e74c3c', '#1abc9c', '#9b59b6', '#f39c12'],
+					borderColor: ['#34495e', '#2980b9', '#c0392b', '#16a085', '#8e44ad', '#e67e22'],
+					borderWidth: 2,
+				},
+				{
+					label: 'Country 2',
+					data: [0, 0, 0, 0, 0, 0],
+					backgroundColor: ['#34495e99', '#2980b999', '#c0392b99', '#16a08599', '#8e44ad99', '#e67e2299'],
+					borderColor: ['#34495e', '#2980b9', '#c0392b', '#16a085', '#8e44ad', '#e67e22'],
+					borderWidth: 2,
+				},
+			],
+		},
+		options: {
+			responsive: true,
+			maintainAspectRatio: false,
+			scales: {
+				y: {
+					beginAtZero: true,
+					title: {
+						display: true,
+						text: 'Capacity (GW)',
+					},
+				},
+				x: {
+					title: {
+						display: true,
+						text: 'Energy Source',
+					},
+				},
+			},
+			plugins: {
+				title: {
+					display: true,
+					text: 'Country Comparison - Energy Supply Capacity',
+				},
+				legend: {
+					display: true,
+					position: 'top',
 				},
 			},
 		},
@@ -927,6 +988,41 @@ function setupPeriodControls() {
 	updateNavigationButtons();
 }
 
+// Setup comparison mode controls
+function setupComparisonControls() {
+	const comparisonToggle = document.getElementById('comparisonMode');
+	const comparisonCountrySelector = document.getElementById('comparisonCountrySelector');
+	const comparisonCountrySelect = document.getElementById('countrySelector2');
+	const comparisonChartContainer = document.getElementById('comparisonChartContainer');
+
+	// Set initial state
+	comparisonCountrySelect.value = comparisonCountry;
+
+	// Comparison mode toggle
+	comparisonToggle.addEventListener('change', (e) => {
+		isComparisonMode = e.target.checked;
+
+		if (isComparisonMode) {
+			comparisonCountrySelector.style.display = 'flex';
+			comparisonCountrySelector.classList.add('active');
+			comparisonChartContainer.style.display = 'block';
+			updateComparisonChart();
+		} else {
+			comparisonCountrySelector.style.display = 'none';
+			comparisonCountrySelector.classList.remove('active');
+			comparisonChartContainer.style.display = 'none';
+		}
+	});
+
+	// Comparison country selector
+	comparisonCountrySelect.addEventListener('change', (e) => {
+		comparisonCountry = e.target.value;
+		if (isComparisonMode) {
+			updateComparisonChart();
+		}
+	});
+}
+
 function updatePeriodSelector() {
 	const periodSelector = document.getElementById('yearSelector');
 	const availablePeriods = getAvailablePeriods().sort().reverse();
@@ -972,6 +1068,9 @@ function updateAllCharts() {
 	updateTimeSeriesChart();
 	updateDeltaChart();
 	updateTotalDeltaChart();
+	if (isComparisonMode) {
+		updateComparisonChart();
+	}
 }
 
 function updateNavigationButtons() {
@@ -1280,4 +1379,51 @@ function updateSourceAttribution(data) {
 	});
 
 	attributionContainer.innerHTML = attributionHTML;
+}
+
+// Update comparison chart
+function updateComparisonChart() {
+	const data1 = getCurrentData(currentPeriod, currentCountry);
+	const data2 = getCurrentData(currentPeriod, comparisonCountry);
+
+	if (!data1 || !data2) return;
+
+	// Get country labels
+	const getCountryLabel = (country) => {
+		return country === 'Global' ? 'Global' : country === 'US' ? 'United States' : country === 'China' ? 'China' : country;
+	};
+
+	const country1Label = getCountryLabel(currentCountry);
+	const country2Label = getCountryLabel(comparisonCountry);
+
+	// Update chart data
+	const chartData = {
+		labels: ['Coal', 'Natural Gas', 'Nuclear', 'Hydroelectric', 'Wind', 'Solar'],
+		datasets: [
+			{
+				label: country1Label,
+				data: [data1.coal.value, data1.gas.value, data1.nuclear.value, data1.hydro.value, data1.wind.value, data1.solar.value],
+				backgroundColor: ['#2c3e50', '#3498db', '#e74c3c', '#1abc9c', '#9b59b6', '#f39c12'],
+				borderColor: ['#34495e', '#2980b9', '#c0392b', '#16a085', '#8e44ad', '#e67e22'],
+				borderWidth: 2,
+			},
+			{
+				label: country2Label,
+				data: [data2.coal.value, data2.gas.value, data2.nuclear.value, data2.hydro.value, data2.wind.value, data2.solar.value],
+				backgroundColor: ['#34495e99', '#2980b999', '#c0392b99', '#16a08599', '#8e44ad99', '#e67e2299'],
+				borderColor: ['#34495e', '#2980b9', '#c0392b', '#16a085', '#8e44ad', '#e67e22'],
+				borderWidth: 2,
+				borderDash: [5, 5],
+			},
+		],
+	};
+
+	// Update chart title
+	const [year, month] = currentPeriod.split('-');
+	const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+	const formattedPeriod = `${monthNames[parseInt(month) - 1]} ${year}`;
+
+	comparisonChart.options.plugins.title.text = `Country Comparison - Energy Supply Capacity (${formattedPeriod})`;
+	comparisonChart.data = chartData;
+	comparisonChart.update();
 }

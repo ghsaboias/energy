@@ -99,6 +99,43 @@ header h1 {
 	border-color: #667eea;
 }
 
+/* Comparison mode styles */
+.comparison-toggle {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+}
+
+.comparison-toggle label {
+	font-weight: 600;
+	color: #333;
+	cursor: pointer;
+	display: flex;
+	align-items: center;
+	gap: 8px;
+}
+
+.comparison-toggle input[type='checkbox'] {
+	width: 16px;
+	height: 16px;
+	cursor: pointer;
+}
+
+.comparison-country {
+	opacity: 0;
+	transition: opacity 0.3s ease;
+}
+
+.comparison-country.active {
+	opacity: 1;
+}
+
+/* Comparison chart container */
+.comparison-container {
+	grid-column: 1 / -1;
+	height: 600px;
+}
+
 .navigation {
 	display: flex;
 	gap: 10px;
@@ -271,6 +308,11 @@ header h1 {
 		gap: 15px;
 	}
 
+	.comparison-toggle,
+	.country-selector {
+		justify-content: center;
+	}
+
 	.main-content {
 		grid-template-columns: 1fr;
 		gap: 20px;
@@ -279,6 +321,10 @@ header h1 {
 	.chart-container {
 		height: 400px;
 		padding: 20px;
+	}
+
+	.comparison-container {
+		height: 500px;
 	}
 
 	.source-grid {
