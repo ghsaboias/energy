@@ -35,6 +35,23 @@ npm run time start task "Create export button UI"
 npm run time end
 ```
 
+**Timing and trigger commands:**
+
+```bash
+# Check elapsed time
+npm run time elapsed          # Minutes (default)
+npm run time elapsed seconds  # Seconds
+npm run time elapsed hours    # Hours
+
+# Threshold checking (returns exit codes)
+npm run time check 5          # Exit 1 if ≥5 minutes
+npm run time check 30 seconds # Exit 1 if ≥30 seconds
+
+# Trigger protocols
+npm run time trigger          # Run all applicable protocols
+npm run time trigger 5min-check,failure-sequence  # Specific protocols
+```
+
 ---
 
 ## 🔄 **LLM Integration Commands**
@@ -70,7 +87,9 @@ npm run time end
 **3. Progress Checks**
 
 - `npm run time status` shows elapsed time and warnings
-- LLM uses this for phase transition decisions
+- `npm run time elapsed` provides exact timing for decision-making
+- `npm run time trigger` evaluates time-based protocols
+- LLM uses timing data for phase transition decisions
 
 **4. Documentation**
 

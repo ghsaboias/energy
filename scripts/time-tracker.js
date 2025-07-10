@@ -280,6 +280,155 @@ class DevTimeTracker {
 		this.saveState();
 		console.log(chalk.green('\n🔄 Time tracking state reset'));
 	}
+
+	elapsed(unit = 'minutes') {
+		if (!this.state.currentPhase) {
+			console.log(chalk.yellow('No active phase to check elapsed time'));
+			return 0;
+		}
+
+		const now = Date.now();
+		const elapsedMs = now - this.state.currentPhase.startTime;
+
+		let elapsed;
+		switch (unit.toLowerCase()) {
+			case 'seconds':
+			case 's':
+				elapsed = Math.floor(elapsedMs / 1000);
+				break;
+			case 'minutes':
+			case 'm':
+				elapsed = Math.floor(elapsedMs / (1000 * 60));
+				break;
+			case 'hours':
+			case 'h':
+				elapsed = Math.floor(elapsedMs / (1000 * 60 * 60));
+				break;
+			default:
+				elapsed = Math.floor(elapsedMs / (1000 * 60)); // default to minutes
+		}
+
+		console.log(chalk.cyan(`⏱️  Elapsed: ${elapsed} ${unit}`));
+		return elapsed;
+	}
+
+	check(threshold, unit = 'minutes') {
+		if (!this.state.currentPhase) {
+			console.log(chalk.red('❌ No active phase'));
+			process.exit(1);
+		}
+
+		const elapsed = this.getElapsedValue(unit);
+		const thresholdNum = parseInt(threshold);
+
+		if (elapsed >= thresholdNum) {
+			console.log(chalk.red(`🚨 THRESHOLD EXCEEDED: ${elapsed} ${unit} >= ${thresholdNum} ${unit}`));
+			console.log(chalk.yellow(`   Current phase: ${this.state.currentPhase.type} - ${this.state.currentPhase.description}`));
+			process.exit(1); // Exit with error code for triggering protocols
+		} else {
+			console.log(chalk.green(`✅ Within threshold: ${elapsed}/${thresholdNum} ${unit}`));
+			process.exit(0);
+		}
+	}
+
+	getElapsedValue(unit) {
+		if (!this.state.currentPhase) return 0;
+
+		const now = Date.now();
+		const elapsedMs = now - this.state.currentPhase.startTime;
+
+		switch (unit.toLowerCase()) {
+			case 'seconds':
+			case 's':
+				return Math.floor(elapsedMs / 1000);
+			case 'minutes':
+			case 'm':
+				return Math.floor(elapsedMs / (1000 * 60));
+			case 'hours':
+			case 'h':
+				return Math.floor(elapsedMs / (1000 * 60 * 60));
+			default:
+				return Math.floor(elapsedMs / (1000 * 60));
+		}
+	}
+
+	trigger(conditions) {
+		if (!this.state.currentPhase) {
+			console.log(chalk.red('❌ No active phase for trigger evaluation'));
+			return;
+		}
+
+		const now = Date.now();
+		const phase = this.state.currentPhase;
+		const elapsedMinutes = Math.floor((now - phase.startTime) / (1000 * 60));
+
+		console.log(chalk.cyan(`\n🎯 Evaluating triggers for ${phase.type} phase`));
+		console.log(chalk.gray(`   Elapsed: ${elapsedMinutes} minutes`));
+
+		// Built-in trigger protocols
+		const protocols = {
+			'5min-check': () => {
+				if (elapsedMinutes >= 5) {
+					console.log(chalk.yellow(`⚠️  5-minute checkpoint reached`));
+					console.log(chalk.white(`   • Quick progress review recommended`));
+					console.log(chalk.white(`   • Are you on track with: "${phase.description}"?`));
+					return true;
+				}
+				return false;
+			},
+			'failure-sequence': () => {
+				if (elapsedMinutes >= 15) {
+					console.log(chalk.red(`🚨 FAILURE SEQUENCE TRIGGERED (15+ minutes)`));
+					console.log(chalk.white(`   Protocol steps:`));
+					console.log(chalk.white(`   1. Document current blocker`));
+					console.log(chalk.white(`   2. Ask for help or research alternative approach`));
+					console.log(chalk.white(`   3. Consider breaking task into smaller parts`));
+					console.log(chalk.white(`   4. End current task if still blocked at 25 minutes`));
+					return true;
+				}
+				return false;
+			},
+			'task-limit': () => {
+				if (phase.type === 'task' && elapsedMinutes >= 60) {
+					console.log(chalk.red(`⏰ TASK TIME LIMIT EXCEEDED (60+ minutes)`));
+					console.log(chalk.white(`   • End current task: npm run time end`));
+					console.log(chalk.white(`   • Break or start new task`));
+					return true;
+				}
+				return false;
+			},
+			'feature-limit': () => {
+				if (phase.type === 'feature' && elapsedMinutes >= 240) {
+					console.log(chalk.red(`⏰ FEATURE TIME LIMIT EXCEEDED (4+ hours)`));
+					console.log(chalk.white(`   • End feature sprint: npm run time end`));
+					console.log(chalk.white(`   • Take extended break or switch context`));
+					return true;
+				}
+				return false;
+			},
+		};
+
+		let triggered = false;
+		if (conditions) {
+			const conditionList = conditions.split(',').map((c) => c.trim());
+			conditionList.forEach((condition) => {
+				if (protocols[condition] && protocols[condition]()) {
+					triggered = true;
+				}
+			});
+		} else {
+			// Run all protocols if no specific conditions given
+			Object.keys(protocols).forEach((protocol) => {
+				if (protocols[protocol]()) {
+					triggered = true;
+				}
+			});
+		}
+
+		if (!triggered) {
+			console.log(chalk.green(`✅ No triggers activated`));
+		}
+	}
 }
 
 // CLI Setup
@@ -325,6 +474,27 @@ program
 	.description('Reset all time tracking data')
 	.action(() => {
 		tracker.reset();
+	});
+
+program
+	.command('elapsed [unit]')
+	.description('Show elapsed time for current phase (units: seconds, minutes, hours)')
+	.action((unit = 'minutes') => {
+		tracker.elapsed(unit);
+	});
+
+program
+	.command('check <threshold> [unit]')
+	.description('Check if elapsed time exceeds threshold (exits with code 1 if exceeded)')
+	.action((threshold, unit = 'minutes') => {
+		tracker.check(threshold, unit);
+	});
+
+program
+	.command('trigger [conditions]')
+	.description('Evaluate time-based triggers and protocols (5min-check, failure-sequence, task-limit, feature-limit)')
+	.action((conditions) => {
+		tracker.trigger(conditions);
 	});
 
 // Default to status if no command provided

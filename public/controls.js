@@ -18,7 +18,7 @@ const elements = {
 	nextBtn: null,
 };
 
-// Initialize all controls
+// Initialize all controls - original function
 export function initializeControls() {
 	// Get DOM elements
 	elements.periodSelector = document.getElementById('yearSelector');
@@ -33,6 +33,27 @@ export function initializeControls() {
 	// Setup event listeners
 	setupPeriodControls();
 	setupNavigationControls();
+
+	// Initialize period selector for default country
+	updatePeriodSelector();
+	updateNavigationButtons();
+}
+
+// Setup controls with callback - new function for modern integration
+export function setupControls(updateCallback) {
+	// Get DOM elements
+	elements.periodSelector = document.getElementById('yearSelector');
+	elements.countrySelector = document.getElementById('countrySelector');
+	elements.prevBtn = document.getElementById('prevYear');
+	elements.nextBtn = document.getElementById('nextYear');
+
+	// Set initial values
+	if (elements.periodSelector) elements.periodSelector.value = appState.currentPeriod;
+	if (elements.countrySelector) elements.countrySelector.value = appState.currentCountry;
+
+	// Setup event listeners with callback
+	setupPeriodControlsWithCallback(updateCallback);
+	setupNavigationControlsWithCallback(updateCallback);
 
 	// Initialize period selector for default country
 	updatePeriodSelector();
@@ -59,6 +80,26 @@ function setupPeriodControls() {
 	}
 }
 
+// Setup period controls with callback
+function setupPeriodControlsWithCallback(updateCallback) {
+	if (elements.periodSelector) {
+		elements.periodSelector.addEventListener('change', (e) => {
+			appState.currentPeriod = e.target.value;
+			updateCallback();
+			updateNavigationButtons();
+		});
+	}
+
+	if (elements.countrySelector) {
+		elements.countrySelector.addEventListener('change', (e) => {
+			appState.currentCountry = e.target.value;
+			updatePeriodSelector();
+			updateCallback();
+			updateNavigationButtons();
+		});
+	}
+}
+
 // Setup navigation controls
 function setupNavigationControls() {
 	if (elements.prevBtn) {
@@ -80,6 +121,33 @@ function setupNavigationControls() {
 				appState.currentPeriod = nextPeriod;
 				elements.periodSelector.value = appState.currentPeriod;
 				updateAllCharts(appState.currentPeriod, appState.currentCountry);
+				updateNavigationButtons();
+			}
+		});
+	}
+}
+
+// Setup navigation controls with callback
+function setupNavigationControlsWithCallback(updateCallback) {
+	if (elements.prevBtn) {
+		elements.prevBtn.addEventListener('click', () => {
+			const prevPeriod = getPreviousPeriod(appState.currentPeriod, appState.currentCountry);
+			if (prevPeriod) {
+				appState.currentPeriod = prevPeriod;
+				elements.periodSelector.value = appState.currentPeriod;
+				updateCallback();
+				updateNavigationButtons();
+			}
+		});
+	}
+
+	if (elements.nextBtn) {
+		elements.nextBtn.addEventListener('click', () => {
+			const nextPeriod = getNextPeriod(appState.currentPeriod, appState.currentCountry);
+			if (nextPeriod) {
+				appState.currentPeriod = nextPeriod;
+				elements.periodSelector.value = appState.currentPeriod;
+				updateCallback();
 				updateNavigationButtons();
 			}
 		});

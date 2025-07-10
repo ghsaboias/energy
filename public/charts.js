@@ -61,6 +61,7 @@ export function initializeEnergyChart() {
 			],
 		},
 		options: {
+			animation: false,
 			responsive: true,
 			maintainAspectRatio: false,
 			interaction: {
@@ -165,7 +166,7 @@ export function initializePercentageChart() {
 			plugins: {
 				title: {
 					display: true,
-					text: 'Global Energy Supply - Percentage Distribution with Actual Values',
+					text: 'Global Energy Supply - Percentage Distribution',
 				},
 				legend: {
 					display: false,

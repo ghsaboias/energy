@@ -1,29 +1,26 @@
-// Main Script - Application Orchestration and Initialization
-
+// Main application imports
 import { initializeAllCharts, updateAllCharts } from './charts.js';
-import { getAppState, initializeControls, initializeKeyboardNavigation, initializeTouchNavigation } from './controls.js';
+import { getAppState, setupControls } from './controls.js';
 
-// Application Initialization
+// Energy Dashboard - Simplified Classic View Only
 class EnergyDashboard {
 	constructor() {
 		this.initialized = false;
+		console.log('🌟 Energy Dashboard - Classic View Initialized');
 	}
 
-	// Initialize the entire dashboard
 	async init() {
-		if (this.initialized) return;
-
 		try {
 			console.log('🚀 Initializing Energy Dashboard...');
 
-			// Wait for DOM to be fully loaded
+			// Wait for DOM if needed
 			if (document.readyState === 'loading') {
 				await new Promise((resolve) => {
 					document.addEventListener('DOMContentLoaded', resolve);
 				});
 			}
 
-			// Initialize all modules in sequence
+			// Initialize core functionality
 			this.initializeCharts();
 			this.initializeControls();
 			this.initializeInteractions();
@@ -43,73 +40,108 @@ class EnergyDashboard {
 		initializeAllCharts();
 	}
 
-	// Initialize controls and UI
+	// Initialize controls
 	initializeControls() {
 		console.log('🎛️ Initializing controls...');
-		initializeControls();
+		setupControls(this.updateCharts.bind(this));
 	}
 
-	// Initialize user interactions (keyboard, touch)
+	// Initialize interactions and keyboard shortcuts
 	initializeInteractions() {
-		console.log('⌨️ Initializing interactions...');
-		initializeKeyboardNavigation();
-		initializeTouchNavigation();
+		console.log('⌨️ Setting up interactions...');
+
+		// Keyboard shortcuts for navigation
+		document.addEventListener('keydown', (event) => {
+			if (event.ctrlKey || event.metaKey) {
+				switch (event.key) {
+					case 'ArrowLeft':
+						event.preventDefault();
+						this.navigatePrevious();
+						break;
+					case 'ArrowRight':
+						event.preventDefault();
+						this.navigateNext();
+						break;
+				}
+			}
+		});
+
+		// Add smooth scroll behavior for navigation
+		document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
+			anchor.addEventListener('click', function (e) {
+				e.preventDefault();
+				const target = document.querySelector(this.getAttribute('href'));
+				target?.scrollIntoView({ behavior: 'smooth' });
+			});
+		});
+	}
+
+	// Navigate to previous period
+	navigatePrevious() {
+		const prevPeriod = getPreviousPeriod(appState.currentPeriod, appState.currentCountry);
+		if (prevPeriod) {
+			appState.currentPeriod = prevPeriod;
+			const periodSelector = document.getElementById('yearSelector');
+			if (periodSelector) periodSelector.value = appState.currentPeriod;
+			this.updateCharts();
+			updateNavigationButtons();
+		}
+	}
+
+	// Navigate to next period
+	navigateNext() {
+		const nextPeriod = getNextPeriod(appState.currentPeriod, appState.currentCountry);
+		if (nextPeriod) {
+			appState.currentPeriod = nextPeriod;
+			const periodSelector = document.getElementById('yearSelector');
+			if (periodSelector) periodSelector.value = appState.currentPeriod;
+			this.updateCharts();
+			updateNavigationButtons();
+		}
 	}
 
 	// Perform initial data update
 	performInitialUpdate() {
-		console.log('🔄 Performing initial update...');
+		console.log('🔄 Performing initial data update...');
 		const state = getAppState();
+		this.updateCharts();
+	}
+
+	// Update all charts with current state
+	updateCharts() {
+		const state = getAppState();
+		console.log(`📊 Updating charts for ${state.currentCountry} - ${state.currentPeriod}`);
 		updateAllCharts(state.currentPeriod, state.currentCountry);
 	}
 
 	// Show error message to user
 	showErrorMessage(message) {
+		// Remove any existing error messages first
+		const existingError = document.querySelector('.error-message');
+		if (existingError) {
+			existingError.remove();
+		}
+
 		const errorDiv = document.createElement('div');
-		errorDiv.style.cssText = `
-			position: fixed;
-			top: 20px;
-			right: 20px;
-			background: #e74c3c;
-			color: white;
-			padding: 15px 20px;
-			border-radius: 5px;
-			z-index: 10000;
-			font-family: Arial, sans-serif;
-			box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-		`;
+		errorDiv.className = 'error-message';
 		errorDiv.textContent = message;
+
 		document.body.appendChild(errorDiv);
 
 		// Auto-remove after 5 seconds
 		setTimeout(() => {
-			if (document.body.contains(errorDiv)) {
-				document.body.removeChild(errorDiv);
+			if (errorDiv.parentNode) {
+				errorDiv.style.transform = 'translateX(100%)';
+				errorDiv.style.opacity = '0';
+				setTimeout(() => errorDiv.remove(), 300);
 			}
 		}, 5000);
 	}
-
-	// Cleanup method (if needed for SPA scenarios)
-	destroy() {
-		console.log('🧹 Cleaning up Energy Dashboard...');
-		// Remove event listeners, clear intervals, etc.
-		this.initialized = false;
-	}
 }
 
-// Create and initialize the dashboard instance
+// Initialize dashboard when DOM is ready
 const dashboard = new EnergyDashboard();
+dashboard.init().catch(console.error);
 
-// Auto-initialize when script loads
-dashboard.init().catch((error) => {
-	console.error('❌ Dashboard initialization failed:', error);
-});
-
-// Export for external access if needed
-window.EnergyDashboard = dashboard;
-
-// Development helpers (only in development)
-if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
-	window.dashboard = dashboard;
-	console.log('🔧 Development mode: dashboard instance available as window.dashboard');
-}
+// Export for external access
+window.dashboard = dashboard;
