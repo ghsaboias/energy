@@ -1,6 +1,6 @@
 // Controls Module - UI Controls and Event Handlers
 
-import { updateAllCharts, updateComparisonChart } from './charts.js';
+import { updateAllCharts } from './charts.js';
 import { getAvailablePeriods } from './data.js';
 import { canNavigateNext, canNavigatePrevious, formatPeriod, getNextPeriod, getPreviousPeriod } from './utils.js';
 
@@ -8,18 +8,12 @@ import { canNavigateNext, canNavigatePrevious, formatPeriod, getNextPeriod, getP
 export const appState = {
 	currentPeriod: '2025-07',
 	currentCountry: 'Global',
-	comparisonCountry: 'US',
-	isComparisonMode: false,
 };
 
 // DOM Elements
 const elements = {
 	periodSelector: null,
 	countrySelector: null,
-	comparisonCountrySelector: null,
-	comparisonToggle: null,
-	comparisonCountrySelect: null,
-	comparisonChartContainer: null,
 	prevBtn: null,
 	nextBtn: null,
 };
@@ -29,21 +23,15 @@ export function initializeControls() {
 	// Get DOM elements
 	elements.periodSelector = document.getElementById('yearSelector');
 	elements.countrySelector = document.getElementById('countrySelector');
-	elements.comparisonCountrySelector = document.getElementById('comparisonCountrySelector');
-	elements.comparisonToggle = document.getElementById('comparisonMode');
-	elements.comparisonCountrySelect = document.getElementById('countrySelector2');
-	elements.comparisonChartContainer = document.getElementById('comparisonChartContainer');
 	elements.prevBtn = document.getElementById('prevYear');
 	elements.nextBtn = document.getElementById('nextYear');
 
 	// Set initial values
 	if (elements.periodSelector) elements.periodSelector.value = appState.currentPeriod;
 	if (elements.countrySelector) elements.countrySelector.value = appState.currentCountry;
-	if (elements.comparisonCountrySelect) elements.comparisonCountrySelect.value = appState.comparisonCountry;
 
 	// Setup event listeners
 	setupPeriodControls();
-	setupComparisonControls();
 	setupNavigationControls();
 
 	// Initialize period selector for default country
@@ -56,7 +44,7 @@ function setupPeriodControls() {
 	if (elements.periodSelector) {
 		elements.periodSelector.addEventListener('change', (e) => {
 			appState.currentPeriod = e.target.value;
-			updateAllCharts(appState.currentPeriod, appState.currentCountry, appState.comparisonCountry, appState.isComparisonMode);
+			updateAllCharts(appState.currentPeriod, appState.currentCountry);
 			updateNavigationButtons();
 		});
 	}
@@ -65,33 +53,8 @@ function setupPeriodControls() {
 		elements.countrySelector.addEventListener('change', (e) => {
 			appState.currentCountry = e.target.value;
 			updatePeriodSelector();
-			updateAllCharts(appState.currentPeriod, appState.currentCountry, appState.comparisonCountry, appState.isComparisonMode);
+			updateAllCharts(appState.currentPeriod, appState.currentCountry);
 			updateNavigationButtons();
-		});
-	}
-}
-
-// Setup comparison mode controls
-function setupComparisonControls() {
-	if (elements.comparisonToggle) {
-		elements.comparisonToggle.addEventListener('change', (e) => {
-			appState.isComparisonMode = e.target.checked;
-
-			if (appState.isComparisonMode) {
-				showComparisonControls();
-				updateComparisonChart(appState.currentPeriod, appState.currentCountry, appState.comparisonCountry);
-			} else {
-				hideComparisonControls();
-			}
-		});
-	}
-
-	if (elements.comparisonCountrySelect) {
-		elements.comparisonCountrySelect.addEventListener('change', (e) => {
-			appState.comparisonCountry = e.target.value;
-			if (appState.isComparisonMode) {
-				updateComparisonChart(appState.currentPeriod, appState.currentCountry, appState.comparisonCountry);
-			}
 		});
 	}
 }
@@ -104,7 +67,7 @@ function setupNavigationControls() {
 			if (prevPeriod) {
 				appState.currentPeriod = prevPeriod;
 				elements.periodSelector.value = appState.currentPeriod;
-				updateAllCharts(appState.currentPeriod, appState.currentCountry, appState.comparisonCountry, appState.isComparisonMode);
+				updateAllCharts(appState.currentPeriod, appState.currentCountry);
 				updateNavigationButtons();
 			}
 		});
@@ -116,32 +79,10 @@ function setupNavigationControls() {
 			if (nextPeriod) {
 				appState.currentPeriod = nextPeriod;
 				elements.periodSelector.value = appState.currentPeriod;
-				updateAllCharts(appState.currentPeriod, appState.currentCountry, appState.comparisonCountry, appState.isComparisonMode);
+				updateAllCharts(appState.currentPeriod, appState.currentCountry);
 				updateNavigationButtons();
 			}
 		});
-	}
-}
-
-// Show comparison controls
-function showComparisonControls() {
-	if (elements.comparisonCountrySelector) {
-		elements.comparisonCountrySelector.style.display = 'flex';
-		elements.comparisonCountrySelector.classList.add('active');
-	}
-	if (elements.comparisonChartContainer) {
-		elements.comparisonChartContainer.style.display = 'block';
-	}
-}
-
-// Hide comparison controls
-function hideComparisonControls() {
-	if (elements.comparisonCountrySelector) {
-		elements.comparisonCountrySelector.style.display = 'none';
-		elements.comparisonCountrySelector.classList.remove('active');
-	}
-	if (elements.comparisonChartContainer) {
-		elements.comparisonChartContainer.style.display = 'none';
 	}
 }
 
@@ -197,17 +138,6 @@ export function setAppState(newState) {
 	if (elements.countrySelector && newState.currentCountry) {
 		elements.countrySelector.value = newState.currentCountry;
 	}
-	if (elements.comparisonCountrySelect && newState.comparisonCountry) {
-		elements.comparisonCountrySelect.value = newState.comparisonCountry;
-	}
-	if (elements.comparisonToggle && typeof newState.isComparisonMode !== 'undefined') {
-		elements.comparisonToggle.checked = newState.isComparisonMode;
-		if (newState.isComparisonMode) {
-			showComparisonControls();
-		} else {
-			hideComparisonControls();
-		}
-	}
 
 	updateNavigationButtons();
 }
@@ -235,14 +165,6 @@ export function initializeKeyboardNavigation() {
 				e.preventDefault();
 				if (elements.nextBtn && !elements.nextBtn.disabled) {
 					elements.nextBtn.click();
-				}
-				break;
-			case 'c':
-			case 'C':
-				e.preventDefault();
-				if (elements.comparisonToggle) {
-					elements.comparisonToggle.checked = !elements.comparisonToggle.checked;
-					elements.comparisonToggle.dispatchEvent(new Event('change'));
 				}
 				break;
 		}

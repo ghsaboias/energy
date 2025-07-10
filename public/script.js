@@ -60,7 +60,7 @@ class EnergyDashboard {
 	performInitialUpdate() {
 		console.log('🔄 Performing initial update...');
 		const state = getAppState();
-		updateAllCharts(state.currentPeriod, state.currentCountry, state.comparisonCountry, state.isComparisonMode);
+		updateAllCharts(state.currentPeriod, state.currentCountry);
 	}
 
 	// Show error message to user

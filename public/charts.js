@@ -23,49 +23,95 @@ export const charts = {
 	comparison: null,
 };
 
-// Initialize Energy Chart
+// Initialize Energy Chart (US vs China Capacity Over Time)
 export function initializeEnergyChart() {
 	const ctx = document.getElementById('energyChart').getContext('2d');
 
 	charts.energy = new Chart(ctx, {
-		type: 'bar',
+		type: 'line',
 		data: {
-			labels: energySources.labels,
+			labels: [], // Will be populated with time periods
 			datasets: [
 				{
-					label: 'Energy Supply (GW)',
-					data: [0, 0, 0, 0, 0, 0],
-					backgroundColor: chartColors.comparison.primary,
-					borderColor: Object.values(chartColors.sources).map((c) => c.border),
-					borderWidth: 2,
+					label: 'United States',
+					data: [],
+					borderColor: '#2563eb',
+					backgroundColor: 'rgba(37, 99, 235, 0.1)',
+					borderWidth: 3,
+					fill: false,
+					tension: 0.4,
+					pointBackgroundColor: '#2563eb',
+					pointBorderColor: '#ffffff',
+					pointBorderWidth: 2,
+					pointRadius: 5,
+				},
+				{
+					label: 'China',
+					data: [],
+					borderColor: '#dc2626',
+					backgroundColor: 'rgba(220, 38, 38, 0.1)',
+					borderWidth: 3,
+					fill: false,
+					tension: 0.4,
+					pointBackgroundColor: '#dc2626',
+					pointBorderColor: '#ffffff',
+					pointBorderWidth: 2,
+					pointRadius: 5,
 				},
 			],
 		},
 		options: {
 			responsive: true,
 			maintainAspectRatio: false,
+			interaction: {
+				intersect: false,
+				mode: 'index',
+			},
 			scales: {
 				y: {
 					beginAtZero: true,
 					title: {
 						display: true,
-						text: 'Capacity (GW)',
+						text: 'Total Installed Capacity (GW)',
+					},
+					grid: {
+						color: 'rgba(0, 0, 0, 0.1)',
 					},
 				},
 				x: {
 					title: {
 						display: true,
-						text: 'Energy Source',
+						text: 'Time Period',
+					},
+					grid: {
+						color: 'rgba(0, 0, 0, 0.1)',
 					},
 				},
 			},
 			plugins: {
 				title: {
 					display: true,
-					text: 'Global Energy Supply Capacity by Source',
+					text: 'US vs China: Total Energy Capacity Over Time',
+					font: {
+						size: 16,
+						weight: 'bold',
+					},
 				},
 				legend: {
-					display: false,
+					display: true,
+					position: 'top',
+				},
+				tooltip: {
+					backgroundColor: 'rgba(0, 0, 0, 0.8)',
+					titleColor: 'white',
+					bodyColor: 'white',
+					borderColor: 'rgba(255, 255, 255, 0.1)',
+					borderWidth: 1,
+					callbacks: {
+						label: function (context) {
+							return `${context.dataset.label}: ${context.parsed.y.toLocaleString()} GW`;
+						},
+					},
 				},
 			},
 		},
@@ -527,34 +573,45 @@ export function initializeComparisonChart() {
 	return charts.comparison;
 }
 
-// Update Energy Chart
-export function updateEnergyChart(currentPeriod, currentCountry) {
+// Update Energy Chart (US vs China Time Series)
+export function updateEnergyChart() {
 	if (!charts.energy) return;
 
-	const data = getCurrentData(currentPeriod, currentCountry);
-	if (!data) return;
+	// Get all periods that both countries have data for
+	const usPeriods = getAvailablePeriods('US').sort();
+	const chinaPeriods = getAvailablePeriods('China').sort();
+	const commonPeriods = usPeriods.filter((period) => chinaPeriods.includes(period));
 
-	const countryLabel = getCountryLabel(currentCountry);
+	if (commonPeriods.length === 0) return;
+
+	// Prepare labels (formatted period names)
+	const labels = commonPeriods.map((period) => formatPeriodShort(period));
+
+	// Calculate total capacity for each country over time
+	const usData = [];
+	const chinaData = [];
+
+	commonPeriods.forEach((period) => {
+		const usCountryData = getCurrentData(period, 'US');
+		const chinaCountryData = getCurrentData(period, 'China');
+
+		if (usCountryData && chinaCountryData) {
+			// Calculate total capacity for US
+			const usTotal = Object.values(usCountryData).reduce((sum, source) => sum + source.value, 0);
+			usData.push(usTotal);
+
+			// Calculate total capacity for China
+			const chinaTotal = Object.values(chinaCountryData).reduce((sum, source) => sum + source.value, 0);
+			chinaData.push(chinaTotal);
+		}
+	});
 
 	// Update chart data
-	const chartData = {
-		labels: energySources.labels,
-		datasets: [
-			{
-				label: `${countryLabel} Energy Supply (GW)`,
-				data: [data.coal.value, data.gas.value, data.nuclear.value, data.hydro.value, data.wind.value, data.solar.value],
-				backgroundColor: chartColors.comparison.primary,
-				borderColor: Object.values(chartColors.sources).map((c) => c.border),
-				borderWidth: 2,
-			},
-		],
-	};
+	charts.energy.data.labels = labels;
+	charts.energy.data.datasets[0].data = usData;
+	charts.energy.data.datasets[1].data = chinaData;
 
-	charts.energy.data = chartData;
 	charts.energy.update();
-
-	// Update source attribution
-	updateSourceAttribution(data);
 }
 
 // Update Percentage Chart
@@ -720,18 +777,13 @@ export function initializeAllCharts() {
 	initializeTimeSeriesChart();
 	initializeDeltaChart();
 	initializeTotalDeltaChart();
-	initializeComparisonChart();
 }
 
 // Update all charts
-export function updateAllCharts(currentPeriod, currentCountry, comparisonCountry, isComparisonMode) {
-	updateEnergyChart(currentPeriod, currentCountry);
+export function updateAllCharts(currentPeriod, currentCountry) {
+	updateEnergyChart(); // US vs China comparison enabled by default
 	updatePercentageChart(currentPeriod, currentCountry);
 	updateTimeSeriesChart(currentCountry);
 	updateDeltaChart(currentPeriod, currentCountry);
 	updateTotalDeltaChart(currentCountry);
-
-	if (isComparisonMode) {
-		updateComparisonChart(currentPeriod, currentCountry, comparisonCountry);
-	}
 }
