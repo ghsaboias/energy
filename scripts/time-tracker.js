@@ -25,8 +25,8 @@ class DevTimeTracker {
 			currentPhase: null,
 			phases: {},
 			dailyStart: null,
-			hourlyCount: 0,
-			sprintCount: 0,
+			taskCount: 0,
+			featureCount: 0,
 		};
 	}
 
@@ -73,23 +73,23 @@ class DevTimeTracker {
 		// Initialize daily tracking if starting daily phase
 		if (type === 'daily') {
 			this.state.dailyStart = now;
-			this.state.hourlyCount = 0;
-			this.state.sprintCount = 0;
+			this.state.taskCount = 0;
+			this.state.featureCount = 0;
 		}
 
 		// Increment counters
-		if (type === 'hourly') this.state.hourlyCount++;
-		if (type === '4hour') this.state.sprintCount++;
+		if (type === 'task') this.state.taskCount = (this.state.taskCount || 0) + 1;
+		if (type === 'feature') this.state.featureCount = (this.state.featureCount || 0) + 1;
 
 		this.saveState();
 
 		console.log(chalk.green(`\n🕐 Started ${type} phase: ${description}`));
 		console.log(chalk.gray(`Time: ${new Date(now).toLocaleTimeString()}`));
 
-		if (type === 'hourly') {
-			console.log(chalk.blue(`📊 Hourly session #${this.state.hourlyCount}`));
-		} else if (type === '4hour') {
-			console.log(chalk.blue(`🔄 4-hour sprint #${this.state.sprintCount}`));
+		if (type === 'task') {
+			console.log(chalk.blue(`📊 Task session #${this.state.taskCount || 1}`));
+		} else if (type === 'feature') {
+			console.log(chalk.blue(`🔄 Feature sprint #${this.state.featureCount || 1}`));
 		}
 	}
 
@@ -117,48 +117,62 @@ class DevTimeTracker {
 		console.log(chalk.green(`\n✅ Completed ${phase.type} phase: ${phase.description}`));
 		console.log(chalk.gray(`Duration: ${this.formatDuration(phase.startTime, now)}`));
 
-		// Update hourly log if it's an hourly phase
-		if (phase.type === 'hourly') {
-			this.updateHourlyLog(phase, now, duration);
+		// Update task log if it's a task phase
+		if (phase.type === 'task') {
+			this.updateTaskLog(phase, now, duration);
 		}
 
 		this.state.currentPhase = null;
 		this.saveState();
 	}
 
-	updateHourlyLog(phase, endTime, duration) {
+	updateTaskLog(phase, endTime, duration) {
 		try {
 			const today = new Date().toISOString().split('T')[0];
-			const logFile = path.join(DOCS_DIR, `hourly-log-${today}.md`);
+			const logFile = path.join(DOCS_DIR, `task-log-${today}.md`);
 
-			const hourNumber = this.state.hourlyCount;
+			const taskNumber = this.state.taskCount || 1;
 			const startTime = new Date(phase.startTime);
 			const formattedDuration = this.formatDuration(phase.startTime, endTime);
 
 			const logEntry = `
-## Hour ${hourNumber} - ${today} ${startTime.toLocaleTimeString()}-${new Date(endTime).toLocaleTimeString()}
+## Task ${taskNumber} - ${today} ${startTime.toLocaleTimeString()}-${new Date(endTime).toLocaleTimeString()}
 
 **Objective**: ${phase.description}
 **Duration**: ${formattedDuration}
-**Progress**: [Update with actual progress]
-**Decisions**: [Update with technical choices made]
-**Blockers**: [Update with any issues encountered]
-**Next Hour**: [Update with next action]
+
+**Progress**:
+- [ ] [Update with specific action items]
+- [ ] [Update with specific action items]
+
+**Technical Decisions**:
+- [Update with implementation choices made]
+
+**Code Changes**:
+- [Update with files modified]
+
+**Testing**:
+- [Update with verification steps]
+
+**Blockers**:
+- [Update with any issues encountered]
+
+**Next Task**: [Update with next action]
 
 ---
 `;
 
-			// Append to or create hourly log
+			// Append to or create task log
 			if (fs.existsSync(logFile)) {
 				fs.appendFileSync(logFile, logEntry);
 			} else {
-				const header = `# Hourly Development Log - ${today}\n\n`;
+				const header = `# Task Development Log - ${today}\n\n`;
 				fs.writeFileSync(logFile, header + logEntry);
 			}
 
-			console.log(chalk.blue(`📝 Updated hourly log: ${path.basename(logFile)}`));
+			console.log(chalk.blue(`📝 Updated task log: ${path.basename(logFile)}`));
 		} catch (error) {
-			console.warn(chalk.yellow(`Warning: Could not update hourly log: ${error.message}`));
+			console.warn(chalk.yellow(`Warning: Could not update task log: ${error.message}`));
 		}
 	}
 
@@ -178,10 +192,10 @@ class DevTimeTracker {
 
 			// Show phase duration warnings
 			const elapsedMinutes = Math.floor((now - phase.startTime) / (1000 * 60));
-			if (phase.type === 'hourly' && elapsedMinutes > 60) {
-				console.log(chalk.yellow(`   ⚠️  Hour exceeded by ${elapsedMinutes - 60} minutes`));
-			} else if (phase.type === '4hour' && elapsedMinutes > 240) {
-				console.log(chalk.yellow(`   ⚠️  Sprint exceeded by ${elapsedMinutes - 240} minutes`));
+			if (phase.type === 'task' && elapsedMinutes > 60) {
+				console.log(chalk.yellow(`   ⚠️  Task exceeded by ${elapsedMinutes - 60} minutes`));
+			} else if (phase.type === 'feature' && elapsedMinutes > 240) {
+				console.log(chalk.yellow(`   ⚠️  Feature exceeded by ${elapsedMinutes - 240} minutes`));
 			}
 		} else {
 			console.log(chalk.gray('No active phase'));
@@ -193,8 +207,8 @@ class DevTimeTracker {
 			console.log(chalk.blue(`\n📅 Today's Session`));
 			console.log(chalk.white(`   Started: ${new Date(this.state.dailyStart).toLocaleTimeString()}`));
 			console.log(chalk.white(`   Total time: ${dailyElapsed}`));
-			console.log(chalk.white(`   Hours completed: ${this.state.hourlyCount}`));
-			console.log(chalk.white(`   Sprints completed: ${this.state.sprintCount}`));
+			console.log(chalk.white(`   Tasks completed: ${this.state.taskCount || 0}`));
+			console.log(chalk.white(`   Features completed: ${this.state.featureCount || 0}`));
 		}
 
 		// Phase recommendations
@@ -206,7 +220,7 @@ class DevTimeTracker {
 
 		if (!this.state.currentPhase) {
 			console.log(chalk.cyan('\n💡 Recommendations:'));
-			console.log(chalk.white('   • Start with: npm run time start hourly "Your task description"'));
+			console.log(chalk.white('   • Start with: npm run time start task "Your task description"'));
 			return;
 		}
 
@@ -215,18 +229,18 @@ class DevTimeTracker {
 
 		console.log(chalk.cyan('\n💡 Recommendations:'));
 
-		if (phase.type === 'hourly') {
-			if (elapsedMinutes >= 50) {
-				console.log(chalk.yellow('   • Consider wrapping up current hour (50+ minutes elapsed)'));
+		if (phase.type === 'task') {
+			if (elapsedMinutes >= 60) {
+				console.log(chalk.yellow('   • Consider wrapping up current task (60+ minutes elapsed)'));
 				console.log(chalk.white('   • Use: npm run time end'));
 			} else if (elapsedMinutes >= 30) {
-				console.log(chalk.blue('   • Halfway through hour - check progress against objective'));
+				console.log(chalk.blue('   • Halfway through task - check progress against objective'));
 			}
-		} else if (phase.type === '4hour') {
-			if (elapsedMinutes >= 220) {
-				console.log(chalk.yellow('   • Consider ending 4-hour sprint (3h 40m+ elapsed)'));
+		} else if (phase.type === 'feature') {
+			if (elapsedMinutes >= 240) {
+				console.log(chalk.yellow('   • Consider ending feature sprint (4+ hours elapsed)'));
 			} else if (elapsedMinutes >= 120) {
-				console.log(chalk.blue('   • Halfway through sprint - review feature progress'));
+				console.log(chalk.blue('   • Halfway through feature - review progress'));
 			}
 		}
 	}
@@ -234,7 +248,7 @@ class DevTimeTracker {
 	summary() {
 		console.log(chalk.cyan('\n📈 Development Summary\n'));
 
-		['daily', '4hour', 'hourly'].forEach((type) => {
+		['daily', 'feature', 'task'].forEach((type) => {
 			if (this.state.phases[type] && this.state.phases[type].length > 0) {
 				const phases = this.state.phases[type];
 				const totalDuration = phases.reduce((sum, p) => sum + p.duration, 0);
@@ -259,8 +273,8 @@ class DevTimeTracker {
 			currentPhase: null,
 			phases: {},
 			dailyStart: null,
-			hourlyCount: 0,
-			sprintCount: 0,
+			taskCount: 0,
+			featureCount: 0,
 		};
 
 		this.saveState();
@@ -276,10 +290,10 @@ program.name('time-tracker').description('Development phase time tracking for yo
 
 program
 	.command('start <type> [description]')
-	.description('Start a development phase (daily, 4hour, hourly)')
+	.description('Start a development phase (daily, feature, task)')
 	.action((type, description = 'Development work') => {
-		if (!['daily', '4hour', 'hourly'].includes(type)) {
-			console.error(chalk.red('Error: Phase type must be daily, 4hour, or hourly'));
+		if (!['daily', 'feature', 'task'].includes(type)) {
+			console.error(chalk.red('Error: Phase type must be daily, feature, or task'));
 			process.exit(1);
 		}
 		tracker.startPhase(type, description);

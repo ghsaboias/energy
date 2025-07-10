@@ -1,0 +1,78 @@
+---
+alwaysApply: false
+description: 'Daily startup automation process'
+---
+
+# Daily Startup Automation
+
+## Auto-Startup Process
+
+When user says "starting the day" or similar session initialization:
+
+1. **Read Context**: Load [docs/daily-startup.md](mdc:docs/daily-startup.md) for current project state
+2. **Start Tracking**: Execute `npm run time start daily "Today's development goals"`
+3. **Provide Context**: Show current project status, next priorities, and tech stack
+4. **Ready for Tasks**: Offer to begin with feature or task development
+
+## Session Flow Pattern
+
+```bash
+# Automatic session initialization
+npm run time start daily "Session description"
+
+# Transition to feature development
+npm run time start feature "Feature name"
+
+# Focus on specific tasks
+npm run time start task "Task description"
+```
+
+## Context Files Priority
+
+1. **Primary**: [docs/daily-startup.md](mdc:docs/daily-startup.md) - Complete startup context
+2. **Strategic**: [docs/development-journal.md](mdc:docs/development-journal.md) - High-level overview
+3. **Process**: [docs/workflow-integration.md](mdc:docs/workflow-integration.md) - Methodology
+
+## Automation Goals
+
+- Single-file startup context
+- Immediate time tracking activation
+- Seamless transition to productive development
+- Minimal cognitive overhead for session initialization
+
+# Daily Startup Automation
+
+## Auto-Startup Process
+
+When user says "starting the day" or similar session initialization:
+
+1. **Read Context**: Load [docs/daily-startup.md](mdc:docs/daily-startup.md) for current project state
+2. **Start Tracking**: Execute `npm run time start daily "Today's development goals"`
+3. **Provide Context**: Show current project status, next priorities, and tech stack
+4. **Ready for Tasks**: Offer to begin with feature or task development
+
+## Session Flow Pattern
+
+```bash
+# Automatic session initialization
+npm run time start daily "Session description"
+
+# Transition to feature development
+npm run time start feature "Feature name"
+
+# Focus on specific tasks
+npm run time start task "Task description"
+```
+
+## Context Files Priority
+
+1. **Primary**: [docs/daily-startup.md](mdc:docs/daily-startup.md) - Complete startup context
+2. **Strategic**: [docs/development-journal.md](mdc:docs/development-journal.md) - High-level overview
+3. **Process**: [docs/workflow-integration.md](mdc:docs/workflow-integration.md) - Methodology
+
+## Automation Goals
+
+- Single-file startup context
+- Immediate time tracking activation
+- Seamless transition to productive development
+- Minimal cognitive overhead for session initialization

@@ -1,0 +1,104 @@
+---
+alwaysApply: false
+description: 'Task-based development methodology and phases'
+---
+
+# Task-Based Development Methodology
+
+## Development Phases
+
+**Task-Based Nomenclature** (not time-based):
+
+- **Task** (15-90 min): Focused implementation work
+- **Feature** (2-6 hours): Complete feature development
+- **Daily**: Strategic planning and architectural decisions
+
+## CLI Commands
+
+```bash
+# Start phases
+npm run time start daily "Session description"
+npm run time start feature "Feature name"
+npm run time start task "Specific task"
+
+# Status and control
+npm run time status
+npm run time end
+```
+
+## Auto-Documentation Integration
+
+- **Task logs**: Auto-created as `docs/task-log-YYYY-MM-DD.md`
+- **Templates**: Pre-populated with timing data and structured sections
+- **Manual updates**: Progress sections updated after `npm run time end`
+
+## Phase Duration Guidelines
+
+- **Task**: Warning at 60+ minutes (focus boundary)
+- **Feature**: Warning at 4+ hours (feature scope boundary)
+- **Daily**: No time limit (strategic planning)
+
+## Development Flow
+
+1. Start daily session with strategic goals
+2. Break into feature development sprints
+3. Execute focused tasks within features
+4. Update documentation after task completion
+5. End phases to maintain temporal discipline
+
+## Integration Benefits
+
+- Temporal awareness for LLM development
+- Automated documentation generation
+- Natural work boundaries and transitions
+- Historical velocity tracking
+
+# Task-Based Development Methodology
+
+## Development Phases
+
+**Task-Based Nomenclature** (not time-based):
+
+- **Task** (15-90 min): Focused implementation work
+- **Feature** (2-6 hours): Complete feature development
+- **Daily**: Strategic planning and architectural decisions
+
+## CLI Commands
+
+```bash
+# Start phases
+npm run time start daily "Session description"
+npm run time start feature "Feature name"
+npm run time start task "Specific task"
+
+# Status and control
+npm run time status
+npm run time end
+```
+
+## Auto-Documentation Integration
+
+- **Task logs**: Auto-created as `docs/task-log-YYYY-MM-DD.md`
+- **Templates**: Pre-populated with timing data and structured sections
+- **Manual updates**: Progress sections updated after `npm run time end`
+
+## Phase Duration Guidelines
+
+- **Task**: Warning at 60+ minutes (focus boundary)
+- **Feature**: Warning at 4+ hours (feature scope boundary)
+- **Daily**: No time limit (strategic planning)
+
+## Development Flow
+
+1. Start daily session with strategic goals
+2. Break into feature development sprints
+3. Execute focused tasks within features
+4. Update documentation after task completion
+5. End phases to maintain temporal discipline
+
+## Integration Benefits
+
+- Temporal awareness for LLM development
+- Automated documentation generation
+- Natural work boundaries and transitions
+- Historical velocity tracking

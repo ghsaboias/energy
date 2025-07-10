@@ -12,8 +12,8 @@ Before starting any development work, establish time tracking:
 # Start daily session
 npm run time start daily "Brief description of today's goals"
 
-# Start hourly focused work
-npm run time start hourly "Specific task description"
+# Start focused task work
+npm run time start task "Specific task description"
 ```
 
 After completing tasks:
@@ -28,31 +28,31 @@ npm run time status
 
 ## Development Methodology Integration
 
-Follow the 3-tier development cycle from [docs/development-cycles.md](mdc:docs/development-cycles.md):
+Follow the 3-tier development cycle from [docs/workflow-integration.md](mdc:docs/workflow-integration.md):
 
-1. **Hourly (Tactical)** - Specific task execution
-2. **4-Hour (Feature)** - Feature development sprints
-3. **Daily (Strategic)** - Architectural decisions
+1. **Task (Tactical)** - Specific task execution
+2. **Feature (Strategic)** - Feature development sprints
+3. **Daily (Planning)** - Architectural decisions
 
 ## Auto-Documentation
 
-- Hourly logs auto-created in `docs/hourly-log-YYYY-MM-DD.md`
+- Task logs auto-created in `docs/task-log-YYYY-MM-DD.md`
 - Update progress sections manually after `npm run time end`
-- Reference [docs/time-tracking-cli.md](mdc:docs/time-tracking-cli.md) for full CLI usage
+- Reference [docs/workflow-integration.md](mdc:docs/workflow-integration.md) for full CLI usage
 
 ## Time Awareness
 
 - Check `npm run time status` periodically for phase duration warnings
-- Transition phases when recommended (50+ min for hourly, 220+ min for 4-hour)
+- Transition phases when recommended (60+ min for task, 4+ hours for feature)
 - Use timing data to inform development velocity decisions
 
 ## CLI Integration Pattern
 
 ```bash
-npm run time start hourly "Task name"
+npm run time start task "Task name"
 # Perform development work
 npm run time end
-# Update hourly log progress section
+# Update task log progress section
 ```
 
 This enforces temporal discipline while providing development context and automated documentation.

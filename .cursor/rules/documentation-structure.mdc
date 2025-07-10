@@ -1,0 +1,82 @@
+---
+alwaysApply: false
+description: 'Documentation structure and maintenance rules'
+---
+
+# Documentation Structure Guidelines
+
+## Current Documentation Architecture
+
+**Core Files (3 total)**:
+
+- [docs/daily-startup.md](mdc:docs/daily-startup.md) - Single-file startup context
+- [docs/development-journal.md](mdc:docs/development-journal.md) - Strategic overview
+- [docs/task-log.md](mdc:docs/task-log.md) - Detailed task tracking template
+
+**Auto-Generated Files**:
+
+- `docs/task-log-YYYY-MM-DD.md` - Daily task logs (created by CLI)
+
+**Historical Archive**:
+
+- `docs/archive/` - Contains 8 legacy documentation files
+
+## Documentation Principles
+
+1. **Concise Current State**: Focus on actionable current information
+2. **Two-Journal System**: High-level strategic + detailed task tracking
+3. **Auto-Documentation**: CLI generates detailed task logs automatically
+4. **Historical Preservation**: Archive legacy content, don't delete
+
+## File Purposes
+
+- **daily-startup.md**: Complete context for session initialization
+- **development-journal.md**: Strategic planning and feature pipeline
+- **task-log.md**: Template for detailed task execution tracking
+- **workflow-integration.md**: LLM integration and CLI methodology
+
+## Maintenance Rules
+
+- Update current state files after major completions
+- Archive redundant files rather than deleting
+- Keep startup context file current and concise
+- Let CLI handle detailed task log generation
+
+# Documentation Structure Guidelines
+
+## Current Documentation Architecture
+
+**Core Files (3 total)**:
+
+- [docs/daily-startup.md](mdc:docs/daily-startup.md) - Single-file startup context
+- [docs/development-journal.md](mdc:docs/development-journal.md) - Strategic overview
+- [docs/task-log.md](mdc:docs/task-log.md) - Detailed task tracking template
+
+**Auto-Generated Files**:
+
+- `docs/task-log-YYYY-MM-DD.md` - Daily task logs (created by CLI)
+
+**Historical Archive**:
+
+- `docs/archive/` - Contains 8 legacy documentation files
+
+## Documentation Principles
+
+1. **Concise Current State**: Focus on actionable current information
+2. **Two-Journal System**: High-level strategic + detailed task tracking
+3. **Auto-Documentation**: CLI generates detailed task logs automatically
+4. **Historical Preservation**: Archive legacy content, don't delete
+
+## File Purposes
+
+- **daily-startup.md**: Complete context for session initialization
+- **development-journal.md**: Strategic planning and feature pipeline
+- **task-log.md**: Template for detailed task execution tracking
+- **workflow-integration.md**: LLM integration and CLI methodology
+
+## Maintenance Rules
+
+- Update current state files after major completions
+- Archive redundant files rather than deleting
+- Keep startup context file current and concise
+- Let CLI handle detailed task log generation
